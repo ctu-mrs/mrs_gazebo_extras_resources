@@ -26,8 +26,8 @@ After building, activate by adding the following to your `world` definition.
 ```
 
 ### Example
-Imagine that the world contains two object -- unit_box_1 and unit_sphere_1, where each of them has one link named  'link'.
-Then for attaching of these objects call:
+Imagine that the world contains two object - `unit_box_1` and `unit_sphere_1`, where each of them has one link named  `link`.
+Then their attaching is done by calling:
 
 ```bash
 rosservice call /link_attacher_node/attach "model_name_1: 'unit_box_1'
