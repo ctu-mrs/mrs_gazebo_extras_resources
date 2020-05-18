@@ -51,6 +51,7 @@ Modified version from the `hector_gazebo:` [hector_gazebo_thermal_camera](https:
 
 ### Description
 - Simulates a thermal camera sensor in Gazebo.
+- Objects that can be detected by the thermo camera has to have specific light properties. See example [fire_mockup](models/fire_mockup).
 - The original plugin has been extended to publish tranform message on topic `/tf_gazebo_static`. To make this transformation visible in ROS use our [Static transform republisher plugin](../world_plugins/README.md#static-transform-republisher-plugin) in your `world` definition. 
 
 ### Usage
