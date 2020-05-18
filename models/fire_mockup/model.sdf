@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="fire_mockup">
+    <static>true</static>
+
+    <link name="fire_mockup">
+      <pose>0 0 0.025 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.01 0.08 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <emissive>1 0.033 0 1</emissive>
+          <diffuse>0 0 0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+  </model>
+</sdf>

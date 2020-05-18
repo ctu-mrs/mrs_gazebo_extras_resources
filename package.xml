@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package format="2">
+
+  <name>mrs_gazebo_extras_resources</name>
+  <version>0.0.1</version>
+
+  <description>The mrs_gazebo_extras_resources package contains gazebo files (worlds, models and plugins) that depends on some packages (e.g. mrs_msgs, mrs_lib) inside of the MRS system.</description>
+
+  <author email="vojtech.spurny@fel.cvut.cz">Vojtech Spurny</author>
+  <maintainer email="robert.penicka@fel.cvut.cz">Robert Penicka</maintainer>
+  <maintainer email="vojtech.spurny@fel.cvut.cz">Vojtech Spurny</maintainer>
+
+  <license>BSD,GNU</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>gazebo</depend>
+  <depend>gazebo_plugins</depend>
+
+  <depend>cv_bridge</depend>
+  <depend>roscpp</depend>
+  <depend>gazebo_ros</depend>
+  <depend>std_msgs</depend>
+  <depend>mrs_msgs</depend>
+  <depend>mrs_lib</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_msgs</depend>
+
+  <export>
+    <!-- gazebo_ros_paths_plugin automatically adds these to
+      GAZEBO_PLUGIN_PATH and GAZEBO_MODEL_PATH when you do this export inside
+      the package.xml file. You can than use URIs of type model://my_package/stuff. -->
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+    <gazebo_ros gazebo_media_path="${prefix}"/>
+    <gazebo_ros plugin_path="${prefix}/lib"/>
+  </export>
+  
+</package>
