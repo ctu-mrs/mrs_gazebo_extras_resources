@@ -1,4 +1,4 @@
-# MRS gazebo extras resources for Gazebo
+# MRS extras resources for Gazebo
 
 Resources for Gazebo/ROS simulator that depends on packages (e.g. mrs_msgs, mrs_lib) inside of the MRS system.
 
