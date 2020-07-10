@@ -19,10 +19,10 @@
 #include "gazebo/msgs/msgs.hh"
 #include "gazebo/transport/transport.hh"
 #include <ignition/math/Pose3.hh>
-#include <mrs_gazebo_common_resources/GazeboAttach.h>
-#include <mrs_gazebo_common_resources/GazeboAttachTyped.h>
-#include <mrs_gazebo_common_resources/GazeboDeleteModel.h>
-#include <mrs_gazebo_common_resources/GazeboApplyForce.h>
+#include <mrs_msgs/GazeboAttach.h>
+#include <mrs_msgs/GazeboAttachTyped.h>
+#include <mrs_msgs/GazeboDeleteModel.h>
+#include <mrs_msgs/GazeboApplyForce.h>
 #include <mutex>
 #include <unordered_map>
 
