@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(mrs_gazebo_extras_resources)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -Wall")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -std=c++17 -O3 -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -std=c++17 -O0 -g -Wall")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -std=c++17 -O3 -g -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall")
 
-# Load catkin and all dependencies required for this package
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
@@ -21,7 +20,6 @@ find_package(catkin REQUIRED COMPONENTS
   mrs_lib
   )
 
-
 # include Gazebo
 find_package(gazebo REQUIRED)
 
@@ -30,11 +28,6 @@ find_package(OpenCV REQUIRED HINTS /usr/local/lib)
 
 ## Find Boost
 find_package(Boost REQUIRED COMPONENTS thread)
-
-generate_messages(
-  DEPENDENCIES
-  mrs_msgs  # need mrs_msgs
-)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
