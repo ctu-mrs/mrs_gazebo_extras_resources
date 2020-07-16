@@ -80,26 +80,28 @@
 #define R_THRESH 254
 #define B_THRESH 1
 
-namespace gazebo {
+namespace gazebo
+{
 
-template<typename Base>
-class GazeboRosThermalCamera_: public Base, GazeboRosCameraUtils {
-	/// \brief Constructor
-	/// \param parent The parent entity, must be a Model or a Sensor
+template <typename Base>
+class GazeboRosThermalCamera_ : public Base, GazeboRosCameraUtils {
+  /// \brief Constructor
+  /// \param parent The parent entity, must be a Model or a Sensor
 public:
-	GazeboRosThermalCamera_();
+  GazeboRosThermalCamera_();
 
-	/// \brief Destructor
+  /// \brief Destructor
 public:
-	~GazeboRosThermalCamera_();
+  ~GazeboRosThermalCamera_();
 
-	/// \brief Load the plugin
-	/// \param take in SDF root element
+  /// \brief Load the plugin
+  /// \param take in SDF root element
 public:
-	void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+  void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
+
 public:
-	void LoadImpl(sensors::SensorPtr _parent, sdf::ElementPtr _sdf) {
-	}
+  void LoadImpl(sensors::SensorPtr _parent, sdf::ElementPtr _sdf) {
+  }
 
 private:
   std::string parent_frame_name_;
@@ -120,46 +122,44 @@ protected:
   void                createStaticTransforms();
   void                TransformThread();
 
-	/// \brief Update the controller
+  /// \brief Update the controller
 protected:
-	virtual void OnNewFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth, const std::string &_format);
+  virtual void OnNewFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth, const std::string &_format);
 
-	/// \brief Update the controller
+  /// \brief Update the controller
 protected:
-	virtual void OnNewImageFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth,
-			const std::string &_format);
+  virtual void OnNewImageFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth, const std::string &_format);
 
-	/// \brief Put camera data to the ROS topic
+  /// \brief Put camera data to the ROS topic
 protected:
-	void PutCameraData(const unsigned char *_src);
+  void PutCameraData(const unsigned char *_src);
+
 protected:
-	void PutCameraData(const unsigned char *_src, common::Time &last_update_time);
+  void PutCameraData(const unsigned char *_src, common::Time &last_update_time);
 
 private:
-	double randomTempNoise(double temp);
+  double randomTempNoise(double temp);
 
-	ros::Publisher raw_thermal_publisher;
-	ros::Publisher raw_thermal_stamped_publisher;
-	std::string raw_thermal_topicname;
-	double surroundingTemperature;
-	double maximalTemperature;
-	double minimalTemperatureGreenColor;
-	double minimalTemperatureGreenColorIntensity;
-	double noiseStdDev;
-	double noiseStdDevMaxTemp;
+  ros::Publisher raw_thermal_publisher;
+  ros::Publisher raw_thermal_stamped_publisher;
+  std::string    raw_thermal_topicname;
+  double         surroundingTemperature;
+  double         maximalTemperature;
+  double         minimalTemperatureGreenColor;
+  double         minimalTemperatureGreenColorIntensity;
+  double         noiseStdDev;
+  double         noiseStdDevMaxTemp;
 
   mrs_lib::ImagePublisher *image_publisher;
 
   /* ros::Publisher debug_image; */
 
-	std::normal_distribution<double> noise;
-	std::default_random_engine generator;
-
+  std::normal_distribution<double> noise;
+  std::default_random_engine       generator;
 };
 
 template <>
-void GazeboRosThermalCamera_<CameraPlugin>::LoadImpl(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
-{
+void GazeboRosThermalCamera_<CameraPlugin>::LoadImpl(sensors::SensorPtr _parent, sdf::ElementPtr _sdf) {
   this->camera_ = this->CameraPlugin::camera;
 }
 
@@ -168,59 +168,59 @@ typedef GazeboRosThermalCamera_<CameraPlugin> GazeboRosThermalCamera;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
-template<class Base>
+template <class Base>
 GazeboRosThermalCamera_<Base>::GazeboRosThermalCamera_() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Destructor
-template<class Base>
+template <class Base>
 GazeboRosThermalCamera_<Base>::~GazeboRosThermalCamera_() {
 }
 
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf) {
-	Base::Load(_parent, _sdf);
-	// copying from CameraPlugin into GazeboRosCameraUtils
-	this->parentSensor_ = this->parentSensor;
-	this->cameraParentSensor_ = std::dynamic_pointer_cast<sensors::CameraSensor>(_parent);
+  Base::Load(_parent, _sdf);
+  // copying from CameraPlugin into GazeboRosCameraUtils
+  this->parentSensor_       = this->parentSensor;
+  this->cameraParentSensor_ = std::dynamic_pointer_cast<sensors::CameraSensor>(_parent);
 
-	this->width_ = this->width;
-	this->height_ = this->height;
-	this->depth_ = this->depth;
-	this->format_ = this->format;
+  this->width_  = this->width;
+  this->height_ = this->height;
+  this->depth_  = this->depth;
+  this->format_ = this->format;
 
-	this->image_connect_count_ = boost::shared_ptr<int>(new int);
-	*this->image_connect_count_ = 0;
-	this->image_connect_count_lock_ = boost::shared_ptr<boost::mutex>(new boost::mutex);
-	this->was_active_ = boost::shared_ptr<bool>(new bool);
-	*this->was_active_ = false;
-	//ROS_INFO_STREAM("creating mrs thermal camera 3 ");
-	LoadImpl(_parent, _sdf);
-	GazeboRosCameraUtils::Load(_parent, _sdf);
+  this->image_connect_count_      = boost::shared_ptr<int>(new int);
+  *this->image_connect_count_     = 0;
+  this->image_connect_count_lock_ = boost::shared_ptr<boost::mutex>(new boost::mutex);
+  this->was_active_               = boost::shared_ptr<bool>(new bool);
+  *this->was_active_              = false;
+  // ROS_INFO_STREAM("creating mrs thermal camera 3 ");
+  LoadImpl(_parent, _sdf);
+  GazeboRosCameraUtils::Load(_parent, _sdf);
 
-	surroundingTemperature = 0;
-	maximalTemperature = 0;
-	minimalTemperatureGreenColor = 0;
+  surroundingTemperature       = 0;
+  maximalTemperature           = 0;
+  minimalTemperatureGreenColor = 0;
 
-	raw_thermal_topicname = _sdf->GetElement("rawTemperatureTopicName")->GetValue()->GetAsString();
-	_sdf->GetElement("surroundingTemperature")->GetValue()->Get(surroundingTemperature);
-	_sdf->GetElement("maximalTemperature")->GetValue()->Get(maximalTemperature);
-	_sdf->GetElement("minimalTemperatureGreenColor")->GetValue()->Get(minimalTemperatureGreenColor);
-	_sdf->GetElement("noiseStdDev")->GetValue()->Get(noiseStdDev);
-	_sdf->GetElement("noiseStdDevMaxTemp")->GetValue()->Get(noiseStdDevMaxTemp);
+  raw_thermal_topicname = _sdf->GetElement("rawTemperatureTopicName")->GetValue()->GetAsString();
+  _sdf->GetElement("surroundingTemperature")->GetValue()->Get(surroundingTemperature);
+  _sdf->GetElement("maximalTemperature")->GetValue()->Get(maximalTemperature);
+  _sdf->GetElement("minimalTemperatureGreenColor")->GetValue()->Get(minimalTemperatureGreenColor);
+  _sdf->GetElement("noiseStdDev")->GetValue()->Get(noiseStdDev);
+  _sdf->GetElement("noiseStdDevMaxTemp")->GetValue()->Get(noiseStdDevMaxTemp);
 
 
-	minimalTemperatureGreenColorIntensity = minimalTemperatureGreenColor * 255;
+  minimalTemperatureGreenColorIntensity = minimalTemperatureGreenColor * 255;
 
-	//noise = std::normal_distribution<double>(0.0, noiseStdDev);
-	srand(time(NULL));
+  // noise = std::normal_distribution<double>(0.0, noiseStdDev);
+  srand(time(NULL));
 
-	ROS_INFO_STREAM("surroundingTemperature " << surroundingTemperature);
+  ROS_INFO_STREAM("surroundingTemperature " << surroundingTemperature);
 
 
   /* load TF-related parameters //{ */
-  
+
   // Get parameters from sdf
   if (!_sdf->HasElement("parentFrameName")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <parentFrameName>, defaults to \"world\"");
@@ -233,43 +233,43 @@ void GazeboRosThermalCamera_<Base>::Load(sensors::SensorPtr _parent, sdf::Elemen
     this->base_frame_name_ = "sensor_base";
   } else
     this->base_frame_name_ = _sdf->Get<std::string>("sensorBaseFrameName");
-  
+
   if (!_sdf->HasElement("x")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <x>, defaults to 0");
     this->x_ = 0;
   } else
     this->x_ = _sdf->Get<double>("x");
-  
+
   if (!_sdf->HasElement("y")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <y>, defaults to 0");
     this->y_ = 0;
   } else
     this->y_ = _sdf->Get<double>("y");
-  
+
   if (!_sdf->HasElement("z")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <z>, defaults to 0");
     this->z_ = 0;
   } else
     this->z_ = _sdf->Get<double>("z");
-  
+
   if (!_sdf->HasElement("roll")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <roll>, defaults to 0");
     this->roll_ = 0;
   } else
     this->roll_ = _sdf->Get<double>("roll");
-  
+
   if (!_sdf->HasElement("pitch")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <pitch>, defaults to 0");
     this->pitch_ = 0;
   } else
     this->pitch_ = _sdf->Get<double>("pitch");
-  
+
   if (!_sdf->HasElement("yaw")) {
     ROS_INFO_NAMED("thermal", "thermal plugin missing <yaw>, defaults to 0");
     this->yaw_ = 0;
   } else
     this->yaw_ = _sdf->Get<double>("yaw");
-  
+
   //}
   this->load_thread_ = boost::thread(boost::bind(&GazeboRosThermalCamera_::TransformThread, this));
 
@@ -285,36 +285,27 @@ void GazeboRosThermalCamera_<Base>::Load(sensors::SensorPtr _parent, sdf::Elemen
   /* ROS_INFO_STREAM("[thermal camera]: After setting FSAA is " << this->cameraParentSensor_->Camera()->RenderTexture()->getFSAA()); */
 
   sdf::ElementPtr imgElem = _sdf->GetElement("image");
-  Ogre::Texture *temp;
-  temp = (Ogre::TextureManager::getSingleton().createManual(
-      "CUSTOM_RttTex",
-      "General",
-      Ogre::TEX_TYPE_2D,
-      this->width_,
-      this->height_,
-      0,
-      this->cameraParentSensor_->Camera()->RenderTexture()->getFormat(),
-      Ogre::TU_RENDERTARGET,
-      0,
-      false,
-      0)).getPointer();
+  Ogre::Texture * temp;
+  temp =
+      (Ogre::TextureManager::getSingleton().createManual("CUSTOM_RttTex", "General", Ogre::TEX_TYPE_2D, this->width_, this->height_, 0,
+                                                         this->cameraParentSensor_->Camera()->RenderTexture()->getFormat(), Ogre::TU_RENDERTARGET, 0, false, 0))
+          .getPointer();
 
   this->cameraParentSensor_->Camera()->SetRenderTarget(temp->getBuffer()->getRenderTarget());
 
 
-
-	this->parentSensor->SetActive(true);
-	ros::NodeHandle n;
-	raw_thermal_publisher = n.advertise < std_msgs::Float64MultiArray > (raw_thermal_topicname, 1);
+  this->parentSensor->SetActive(true);
+  ros::NodeHandle n;
+  raw_thermal_publisher = n.advertise<std_msgs::Float64MultiArray>(raw_thermal_topicname, 1);
   /* debug_image = n.advertise<sensor_msgs::Image>("gazebo_debug_image", 1); */
   image_publisher = new mrs_lib::ImagePublisher(boost::make_shared<ros::NodeHandle>(n));
-	std::stringstream ss_stamped_thermal;
-	ss_stamped_thermal << raw_thermal_topicname << "_stamped";
-	raw_thermal_stamped_publisher = n.advertise < mrs_msgs::Float64MultiArrayStamped > (ss_stamped_thermal.str(), 1);
+  std::stringstream ss_stamped_thermal;
+  ss_stamped_thermal << raw_thermal_topicname << "_stamped";
+  raw_thermal_stamped_publisher = n.advertise<mrs_msgs::Float64MultiArrayStamped>(ss_stamped_thermal.str(), 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::TransformThread() {
   while (!this->initialized_) {
     ros::Duration(0.01).sleep();
@@ -327,7 +318,7 @@ void GazeboRosThermalCamera_<Base>::TransformThread() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::createStaticTransforms() {
   // frame describing sensor main baseline frame in drone frame
   geometry_msgs::TransformStamped static_transform_base_world;
@@ -364,7 +355,7 @@ void GazeboRosThermalCamera_<Base>::createStaticTransforms() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::publishStaticTransforms(const ros::WallTimerEvent &event) {
   /* ROS_INFO("publishing"); */
   this->tf_pub_.publish(this->tf_message_);
@@ -372,137 +363,135 @@ void GazeboRosThermalCamera_<Base>::publishStaticTransforms(const ros::WallTimer
 
 ////////////////////////////////////////////////////////////////////////////////
 // Update the controller
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::OnNewFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth,
-		const std::string &_format) {
-	//ROS_INFO_STREAM("OnNewFrame " << this->initialized_);
-	if (!this->initialized_ || this->height_ <= 0 || this->width_ <= 0)
-		return;
+                                               const std::string &_format) {
+  // ROS_INFO_STREAM("OnNewFrame " << this->initialized_);
+  if (!this->initialized_ || this->height_ <= 0 || this->width_ <= 0)
+    return;
 
 #if (GAZEBO_MAJOR_VERSION > 6)
   this->sensor_update_time_ = this->parentSensor_->LastUpdateTime();
 #else
-	this->sensor_update_time_ = this->parentSensor_->GetLastUpdateTime();
+  this->sensor_update_time_ = this->parentSensor_->GetLastUpdateTime();
 #endif
 
-	if (!this->parentSensor->IsActive()) {
-		if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 || this->raw_thermal_stamped_publisher.getNumSubscribers() > 0)
-			// do this first so there's chance for sensor to run 1 frame after activate
-			this->parentSensor->SetActive(true);
-	} else {
-		if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 || this->raw_thermal_stamped_publisher.getNumSubscribers() > 0) {
+  if (!this->parentSensor->IsActive()) {
+    if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 || this->raw_thermal_stamped_publisher.getNumSubscribers() > 0)
+      // do this first so there's chance for sensor to run 1 frame after activate
+      this->parentSensor->SetActive(true);
+  } else {
+    if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 ||
+        this->raw_thermal_stamped_publisher.getNumSubscribers() > 0) {
 #if (GAZEBO_MAJOR_VERSION >= 8)
       common::Time cur_time = this->world_->SimTime();
 #else
-			common::Time cur_time = this->world_->GetSimTime();
+      common::Time cur_time = this->world_->GetSimTime();
 #endif
-			if (cur_time - this->last_update_time_ >= this->update_period_) {
-				this->PutCameraData(_image);
-				this->PublishCameraInfo();
-				this->last_update_time_ = cur_time;
-			}
-		}
-	}
+      if (cur_time - this->last_update_time_ >= this->update_period_) {
+        this->PutCameraData(_image);
+        this->PublishCameraInfo();
+        this->last_update_time_ = cur_time;
+      }
+    }
+  }
 }
 
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::OnNewImageFrame(const unsigned char *_image, unsigned int _width, unsigned int _height, unsigned int _depth,
-		const std::string &_format) {
-	OnNewFrame(_image, _width, _height, _depth, _format);
+                                                    const std::string &_format) {
+  OnNewFrame(_image, _width, _height, _depth, _format);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Put camera_ data to the interface
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src, common::Time &last_update_time) {
-	this->sensor_update_time_ = last_update_time;
-	this->PutCameraData(_src);
+  this->sensor_update_time_ = last_update_time;
+  this->PutCameraData(_src);
 }
 
-template<class Base>
+template <class Base>
 double GazeboRosThermalCamera_<Base>::randomTempNoise(double temp) {
-	double rand_range = this->noiseStdDev
-			+ std::fabs(this->noiseStdDevMaxTemp - this->noiseStdDev) * (temp - surroundingTemperature) / this->maximalTemperature;
+  double rand_range = this->noiseStdDev + std::fabs(this->noiseStdDevMaxTemp - this->noiseStdDev) * (temp - surroundingTemperature) / this->maximalTemperature;
 
-	double rand_temp = ((double) rand() * (rand_range) / (double) RAND_MAX - rand_range / 2.0);
-	return rand_temp;
+  double rand_temp = ((double)rand() * (rand_range) / (double)RAND_MAX - rand_range / 2.0);
+  return rand_temp;
 }
 
-template<class Base>
+template <class Base>
 void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
-	if (!this->initialized_ || this->height_ <= 0 || this->width_ <= 0)
-		return;
+  if (!this->initialized_ || this->height_ <= 0 || this->width_ <= 0)
+    return;
 
-	this->lock_.lock();
+  this->lock_.lock();
 
-	// copy data into image
-	this->image_msg_.header.frame_id = this->frame_name_;
-	this->image_msg_.header.stamp.sec = this->sensor_update_time_.sec;
-	this->image_msg_.header.stamp.nsec = this->sensor_update_time_.nsec;
+  // copy data into image
+  this->image_msg_.header.frame_id   = this->frame_name_;
+  this->image_msg_.header.stamp.sec  = this->sensor_update_time_.sec;
+  this->image_msg_.header.stamp.nsec = this->sensor_update_time_.nsec;
 
-	/* ROS_INFO_STREAM("this->raw_thermal_publisher.getNumSubscribers() " << this->raw_thermal_publisher.getNumSubscribers()); */
+  /* ROS_INFO_STREAM("this->raw_thermal_publisher.getNumSubscribers() " << this->raw_thermal_publisher.getNumSubscribers()); */
 
-	/// don't bother if there are no subscribers
-	if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 || this->raw_thermal_stamped_publisher.getNumSubscribers() > 0) {
-		//ROS_INFO_STREAM("PutCameraData " << this->raw_thermal_publisher.getNumSubscribers());
+  /// don't bother if there are no subscribers
+  if ((*this->image_connect_count_) > 0 || this->raw_thermal_publisher.getNumSubscribers() > 0 || this->raw_thermal_stamped_publisher.getNumSubscribers() > 0) {
+    // ROS_INFO_STREAM("PutCameraData " << this->raw_thermal_publisher.getNumSubscribers());
 
-		/* size_t size = this->width_ * this->height_; */
+    /* size_t size = this->width_ * this->height_; */
 
-		/* std::vector < uint8_t > &data(this->image_msg_.data); */
-    cv::Mat image_vis(cv::Size(this->width_/2, this->height_/2),CV_8UC1);
+    /* std::vector < uint8_t > &data(this->image_msg_.data); */
+    cv::Mat image_vis(cv::Size(this->width_ / 2, this->height_ / 2), CV_8UC1);
     /* image_vis.step = image_vis.cols; */
-    cv::Mat image_proc(cv::Size(this->width_, this->height_),CV_64FC1);
+    cv::Mat image_proc(cv::Size(this->width_, this->height_), CV_64FC1);
     /* image_proc.step = image_proc.cols; */
 
-    cv::Mat image_temp(cv::Size(this->width_, this->height_),CV_64FC1);
+    cv::Mat image_temp(cv::Size(this->width_, this->height_), CV_64FC1);
     /* image_temp.step = image_temp.cols; */
-    cv::Mat image_bg(cv::Size(this->width_, this->height_),CV_64FC1);
+    cv::Mat image_bg(cv::Size(this->width_, this->height_), CV_64FC1);
     /* image_bg.step = image_bg.cols; */
-    cv::Mat image_rw_temp(cv::Size(this->width_/2, this->height_/2),CV_64FC1);
+    cv::Mat image_rw_temp(cv::Size(this->width_ / 2, this->height_ / 2), CV_64FC1);
     /* image_rw_temp.step = image_rw_temp.cols; */
-		/* std::vector<double> data_rw_temp; */
-		/* data_rw_temp.resize(size); */
+    /* std::vector<double> data_rw_temp; */
+    /* data_rw_temp.resize(size); */
 
-		double maximalTemperature_without_surrounding = maximalTemperature - surroundingTemperature;
-		double image_scale = 255.0 / (maximalTemperature + this->noiseStdDevMaxTemp / 2.0);
-		size_t img_index = 0;
-		double sum_empty = 0;
-		int num_empty = 0;
-    cv::Mat raw_input(cv::Size(this->width_, this->height_),CV_8UC3);
-    for (int j=0; j<image_temp.rows; j++)
-      for (int i=0; i<image_temp.cols; i++){
-        raw_input.at<cv::Vec3b>(cv::Point(i,j)) = cv::Vec3b(_src[img_index], _src[img_index+1], _src[img_index+2]);
-			if ((_src[img_index] > R_THRESH) && (_src[img_index + 1] < minimalTemperatureGreenColorIntensity) && (_src[img_index + 2] < B_THRESH)) {
-				//RGB [255,0,0] translates to white (white hot)
-				//data[i] = 255 * (1.0 - (double) _src[img_index + 1] / ((double) minimalTemperatureGreenColorIntensity));
+    double  maximalTemperature_without_surrounding = maximalTemperature - surroundingTemperature;
+    double  image_scale                            = 255.0 / (maximalTemperature + this->noiseStdDevMaxTemp / 2.0);
+    size_t  img_index                              = 0;
+    double  sum_empty                              = 0;
+    int     num_empty                              = 0;
+    cv::Mat raw_input(cv::Size(this->width_, this->height_), CV_8UC3);
+    for (int j = 0; j < image_temp.rows; j++)
+      for (int i = 0; i < image_temp.cols; i++) {
+        raw_input.at<cv::Vec3b>(cv::Point(i, j)) = cv::Vec3b(_src[img_index], _src[img_index + 1], _src[img_index + 2]);
+        if ((_src[img_index] > R_THRESH) && (_src[img_index + 1] < minimalTemperatureGreenColorIntensity) && (_src[img_index + 2] < B_THRESH)) {
+          // RGB [255,0,0] translates to white (white hot)
+          // data[i] = 255 * (1.0 - (double) _src[img_index + 1] / ((double) minimalTemperatureGreenColorIntensity));
 
-				double temp = surroundingTemperature
-						+ maximalTemperature_without_surrounding * (1.0 - ((double) _src[img_index + 1] / minimalTemperatureGreenColorIntensity));
+          double temp =
+              surroundingTemperature + maximalTemperature_without_surrounding * (1.0 - ((double)_src[img_index + 1] / minimalTemperatureGreenColorIntensity));
 
-				/* image_temp.at<double>(cv::Point(i,j)) = round(temp + randomTempNoise(temp)); */
-				image_temp.at<double>(cv::Point(i,j)) = temp;
+          /* image_temp.at<double>(cv::Point(i,j)) = round(temp + randomTempNoise(temp)); */
+          image_temp.at<double>(cv::Point(i, j)) = temp;
 
-				//ROS_INFO_STREAM(i << " data[i] " << image_scale * data_rw_temp[i]);
+          // ROS_INFO_STREAM(i << " data[i] " << image_scale * data_rw_temp[i]);
 
-			} else {
-				//Everything else is written to the MONO8 output image much darker
-				image_bg.at<double>(cv::Point(i,j)) = (double)((3*255) - (_src[img_index] + _src[img_index + 1] + _src[img_index + 2]) )/3.0 / 32.0;
-				image_bg.at<double>(cv::Point(i,j)) += surroundingTemperature;
-        image_temp.at<double>(cv::Point(i,j)) = 0;
-				sum_empty += image_bg.at<double>(cv::Point(i,j));
-				num_empty += 1;
-			}
-			img_index += 3;
-		}
+        } else {
+          // Everything else is written to the MONO8 output image much darker
+          image_bg.at<double>(cv::Point(i, j)) = (double)((3 * 255) - (_src[img_index] + _src[img_index + 1] + _src[img_index + 2])) / 3.0 / 32.0;
+          image_bg.at<double>(cv::Point(i, j)) += surroundingTemperature;
+          image_temp.at<double>(cv::Point(i, j)) = 0;
+          sum_empty += image_bg.at<double>(cv::Point(i, j));
+          num_empty += 1;
+        }
+        img_index += 3;
+      }
     if (DEBUG)
-      image_publisher->publish("gazebo_image_debug_raw_" + raw_thermal_topicname , 0.2, raw_input);
+      image_publisher->publish("gazebo_image_debug_raw_" + raw_thermal_topicname, 0.2, raw_input);
 
 
     unsigned int dilation_size = 1;
     /* unsigned int dilation_size = 0; */
-    cv::Mat element = getStructuringElement( cv::MORPH_RECT,
-                       cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
-                       cv::Point( dilation_size, dilation_size ) );
+    cv::Mat element = getStructuringElement(cv::MORPH_RECT, cv::Size(2 * dilation_size + 1, 2 * dilation_size + 1), cv::Point(dilation_size, dilation_size));
     /* cv::Mat element = getStructuringElement( cv::MORPH_ELLIPSE, */
     /*                    cv::Size(2, 2), */
     /*                    cv::Point( 1, 1 ) ); */
@@ -510,44 +499,44 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
     /* cv_bridge::CvImage br_image_msg; */
     /* br_image_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", cv::Mat(image_temp.rows, image_temp.cols, CV_8UC1, cv::Scalar(0))); */
     cv::Mat image_temp_q;
-    image_temp.convertTo(image_temp_q, CV_8U );
+    image_temp.convertTo(image_temp_q, CV_8U);
     /* debug_image.publish(br_image_msg.toImageMsg()); */
     if (DEBUG)
-      image_publisher->publish("gazebo_image_debug_threshold_" + raw_thermal_topicname , 0.2, image_temp_q);
+      image_publisher->publish("gazebo_image_debug_threshold_" + raw_thermal_topicname, 0.2, image_temp_q);
 
     /* cv::dilate(image_temp,image_proc,element); */
     image_proc = image_temp;
     /* image_proc = image_temp; */
-    
-    cv::Mat image_proc_downscaled(cv::Size(32,32),CV_64FC1);
-    cv::Mat image_bg_downscaled(cv::Size(32,32),CV_64FC1);
+
+    cv::Mat image_proc_downscaled(cv::Size(32, 32), CV_64FC1);
+    cv::Mat image_bg_downscaled(cv::Size(32, 32), CV_64FC1);
     /* image_proc_downscaled.step = image_proc_downscaled.cols; */
     /* image_bg_downscaled.step = image_bg_downscaled.cols; */
-    cv::resize(image_proc,image_proc_downscaled,cv::Size(32,32),0,0,cv::INTER_AREA);
-    cv::resize(image_bg,image_bg_downscaled,cv::Size(32,32),0,0,cv::INTER_NEAREST);
+    cv::resize(image_proc, image_proc_downscaled, cv::Size(32, 32), 0, 0, cv::INTER_AREA);
+    cv::resize(image_bg, image_bg_downscaled, cv::Size(32, 32), 0, 0, cv::INTER_NEAREST);
     /* image_proc_downscaled = image_proc; */
     /* image_bg_downscaled = image_bg; */
 
-		/* double avg_empty = sum_empty / (double) num_empty; */
-		//ROS_INFO_STREAM("avg_empty " << avg_empty);
-		/* for (size_t i = 0; i < size/4; i+=8) { */
-    image_rw_temp = image_proc_downscaled+image_bg_downscaled;
-    for (int j=0; j<image_rw_temp.rows; j++)
-      for (int i=0; i<image_rw_temp.cols; i++){
-			/* if (image_proc_downscaled.at<double>(cv::Point(i,j)) <0.0001) { */
-			/* /1* if (image_proc_downscaled.data[i] == 0) { *1/ */
-			/* /1* if (false) { *1/ */
-			/* 	image_rw_temp.at<double>(cv::Point(i,j)) = image_bg_downscaled.at<double>(cv::Point(i,j)) - avg_empty; */
-			/* } else{ */
+    /* double avg_empty = sum_empty / (double) num_empty; */
+    // ROS_INFO_STREAM("avg_empty " << avg_empty);
+    /* for (size_t i = 0; i < size/4; i+=8) { */
+    image_rw_temp = image_proc_downscaled + image_bg_downscaled;
+    for (int j = 0; j < image_rw_temp.rows; j++)
+      for (int i = 0; i < image_rw_temp.cols; i++) {
+        /* if (image_proc_downscaled.at<double>(cv::Point(i,j)) <0.0001) { */
+        /* /1* if (image_proc_downscaled.data[i] == 0) { *1/ */
+        /* /1* if (false) { *1/ */
+        /* 	image_rw_temp.at<double>(cv::Point(i,j)) = image_bg_downscaled.at<double>(cv::Point(i,j)) - avg_empty; */
+        /* } else{ */
         /* image_rw_temp.at<double>(cv::Point(i,j))= image_proc_downscaled.at<double>(cv::Point(i,j)); */
-      /* } */
-      image_rw_temp.at<double>(cv::Point(i,j)) = image_rw_temp.at<double>(cv::Point(i,j))+ randomTempNoise(image_rw_temp.at<double>(cv::Point(i,j)));
-      /* image_rw_temp.data[i] = image_rw_temp.data[i] + randomTempNoise(image_rw_temp.data[i]); */
-      image_vis.at<unsigned char>(cv::Point(i,j)) = std::max(0.0,std::min(255.0, image_scale * image_rw_temp.at<double>(cv::Point(i,j))));
-      /* ROS_INFO_STREAM(image_rw_temp.at<double>(cv::Point(i,j))); */
-      /* ROS_INFO_STREAM("BG: " << image_bg_downscaled.at<double>(cv::Point(i,j))); */
-      /* ROS_INFO_STREAM("FG: " << image_proc_downscaled.at<double>(cv::Point(i,j))); */
-		}
+        /* } */
+        image_rw_temp.at<double>(cv::Point(i, j)) = image_rw_temp.at<double>(cv::Point(i, j)) + randomTempNoise(image_rw_temp.at<double>(cv::Point(i, j)));
+        /* image_rw_temp.data[i] = image_rw_temp.data[i] + randomTempNoise(image_rw_temp.data[i]); */
+        image_vis.at<unsigned char>(cv::Point(i, j)) = std::max(0.0, std::min(255.0, image_scale * image_rw_temp.at<double>(cv::Point(i, j))));
+        /* ROS_INFO_STREAM(image_rw_temp.at<double>(cv::Point(i,j))); */
+        /* ROS_INFO_STREAM("BG: " << image_bg_downscaled.at<double>(cv::Point(i,j))); */
+        /* ROS_INFO_STREAM("FG: " << image_proc_downscaled.at<double>(cv::Point(i,j))); */
+      }
     /* ROS_INFO_STREAM(image_bg); */
 
     /* ROS_INFO_STREAM(image_raw); */
@@ -555,48 +544,48 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
     /* cv::imshow("image_raw_dilated",image_raw); */
     /* cv::waitKey(10); */
 
-		std_msgs::Float64MultiArray raw_temp_msg;
-		raw_temp_msg.layout.dim.push_back(std_msgs::MultiArrayDimension());
-		raw_temp_msg.layout.dim[0].size = 32;
-		raw_temp_msg.layout.dim[0].stride = 1;
-		raw_temp_msg.layout.dim[0].label = "x-axis";
-		raw_temp_msg.layout.dim.push_back(std_msgs::MultiArrayDimension());
-		raw_temp_msg.layout.dim[1].size = 32;
-		raw_temp_msg.layout.dim[1].stride = 1;
-		raw_temp_msg.layout.dim[1].label = "y-axis";
-    for (int j=0; j<image_rw_temp.rows; j++)
-      for (int i=0; i<image_rw_temp.cols; i++){
-      raw_temp_msg.data.push_back(image_rw_temp.at<double>(cv::Point(i,j)));
-    }
-		/* raw_temp_msg.data = data_rw_temp; */
-		this->raw_thermal_publisher.publish(raw_temp_msg);
+    std_msgs::Float64MultiArray raw_temp_msg;
+    raw_temp_msg.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    raw_temp_msg.layout.dim[0].size   = 32;
+    raw_temp_msg.layout.dim[0].stride = 1;
+    raw_temp_msg.layout.dim[0].label  = "x-axis";
+    raw_temp_msg.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    raw_temp_msg.layout.dim[1].size   = 32;
+    raw_temp_msg.layout.dim[1].stride = 1;
+    raw_temp_msg.layout.dim[1].label  = "y-axis";
+    for (int j = 0; j < image_rw_temp.rows; j++)
+      for (int i = 0; i < image_rw_temp.cols; i++) {
+        raw_temp_msg.data.push_back(image_rw_temp.at<double>(cv::Point(i, j)));
+      }
+    /* raw_temp_msg.data = data_rw_temp; */
+    this->raw_thermal_publisher.publish(raw_temp_msg);
 
     mrs_msgs::Float64MultiArrayStamped raw_temp_stamped_msg;
     raw_temp_stamped_msg.header = this->image_msg_.header;
     raw_temp_stamped_msg.matrix = raw_temp_msg;
     this->raw_thermal_stamped_publisher.publish(raw_temp_stamped_msg);
 
-		// publish to ros
-		this->image_msg_.width = this->width_/3;
-		this->image_msg_.height = this->height_/3;
-		this->image_msg_.encoding = sensor_msgs::image_encodings::MONO8;
-		this->image_msg_.step = this->image_msg_.width;
+    // publish to ros
+    this->image_msg_.width    = this->width_ / 3;
+    this->image_msg_.height   = this->height_ / 3;
+    this->image_msg_.encoding = sensor_msgs::image_encodings::MONO8;
+    this->image_msg_.step     = this->image_msg_.width;
 
-    this->image_msg_.data.resize((this->image_msg_.step)*(this->image_msg_.height));
+    this->image_msg_.data.resize((this->image_msg_.step) * (this->image_msg_.height));
     int index = 0;
-    for (int j=0; j<image_rw_temp.rows; j++)
-      for (int i=0; i<image_rw_temp.cols; i++){
-      /* this->image_msg_.data[i] = image_proc.data[i]; */
-      this->image_msg_.data[index] = image_vis.at<unsigned char>(cv::Point(i,j));
-      index++;
-    }
-		this->image_pub_.publish(this->image_msg_);
-	}
+    for (int j = 0; j < image_rw_temp.rows; j++)
+      for (int i = 0; i < image_rw_temp.cols; i++) {
+        /* this->image_msg_.data[i] = image_proc.data[i]; */
+        this->image_msg_.data[index] = image_vis.at<unsigned char>(cv::Point(i, j));
+        index++;
+      }
+    this->image_pub_.publish(this->image_msg_);
+  }
 
-	this->lock_.unlock();
+  this->lock_.unlock();
 }
 
 // Register this plugin with the simulator
 GZ_REGISTER_SENSOR_PLUGIN(GazeboRosThermalCamera)
 
-}
+}  // namespace gazebo
