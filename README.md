@@ -1,4 +1,4 @@
-# MRS extras resources for Gazebo
+# MRS extras resources for Gazebo [![Build Status](https://travis-ci.com/ctu-mrs/mrs_gazebo_extras_resources.svg?branch=master)](https://travis-ci.com/ctu-mrs/mrs_gazebo_extras_resources)
 
 Resources for Gazebo/ROS simulator that depends on packages (e.g. mrs_msgs, mrs_lib) inside of the MRS system.
 
