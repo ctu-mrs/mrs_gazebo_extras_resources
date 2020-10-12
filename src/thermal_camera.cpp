@@ -413,6 +413,9 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src, com
 
 template <class Base>
 double GazeboRosThermalCamera_<Base>::randomTempNoise(double temp) {
+  if (temp < 5.0){
+    return 0.0;
+  }
   double rand_range = this->noiseStdDev + std::fabs(this->noiseStdDevMaxTemp - this->noiseStdDev) * (temp - surroundingTemperature) / this->maximalTemperature;
 
   double rand_temp = ((double)rand() * (rand_range) / (double)RAND_MAX - rand_range / 2.0);
@@ -463,7 +466,9 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
     for (int j = 0; j < image_temp.rows; j++)
       for (int i = 0; i < image_temp.cols; i++) {
         raw_input.at<cv::Vec3b>(cv::Point(i, j)) = cv::Vec3b(_src[img_index], _src[img_index + 1], _src[img_index + 2]);
-        if ((_src[img_index] > R_THRESH) && (_src[img_index + 1] < minimalTemperatureGreenColorIntensity) && (_src[img_index + 2] < B_THRESH)) {
+        if ((_src[img_index] > R_THRESH) && (_src[img_index + 1] < (minimalTemperatureGreenColorIntensity+10)) && (_src[img_index + 2] < B_THRESH)) {
+
+        /* if ((_src[img_index] > R_THRESH) && (_src[img_index + 1] <= 255) && (_src[img_index + 2] < B_THRESH)) { */
           // RGB [255,0,0] translates to white (white hot)
           // data[i] = 255 * (1.0 - (double) _src[img_index + 1] / ((double) minimalTemperatureGreenColorIntensity));
 
@@ -472,6 +477,9 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
 
           /* image_temp.at<double>(cv::Point(i,j)) = round(temp + randomTempNoise(temp)); */
           image_temp.at<double>(cv::Point(i, j)) = temp;
+          image_bg.at<double>(cv::Point(i, j)) = 0.0;
+
+ 
 
           // ROS_INFO_STREAM(i << " data[i] " << image_scale * data_rw_temp[i]);
 
@@ -530,7 +538,15 @@ void GazeboRosThermalCamera_<Base>::PutCameraData(const unsigned char *_src) {
         /* } else{ */
         /* image_rw_temp.at<double>(cv::Point(i,j))= image_proc_downscaled.at<double>(cv::Point(i,j)); */
         /* } */
+        /* if (image_rw_temp.at<double>(cv::Point(i, j)) <10){ */
+        /*   ROS_INFO("[%s]: cold!, temp orig is %f", ros::this_node::getName().c_str(), image_temp.at<double>(cv::Point(i, j))); */
+        /*   ROS_INFO("[%s]: cold!, temp downscaled is %f", ros::this_node::getName().c_str(), image_proc_downscaled.at<double>(cv::Point(i, j))); */
+        /*   ROS_INFO("[%s]: cold!, temp is %f", ros::this_node::getName().c_str(), image_rw_temp.at<double>(cv::Point(i, j))); */
+        /* } */
         image_rw_temp.at<double>(cv::Point(i, j)) = image_rw_temp.at<double>(cv::Point(i, j)) + randomTempNoise(image_rw_temp.at<double>(cv::Point(i, j)));
+        /* if (image_temp.at<double>(cv::Point(i, j)) <10){ */
+        /*   ROS_INFO("[%s]: cold!, output is %f", ros::this_node::getName().c_str(), image_rw_temp.at<double>(cv::Point(i, j))); */
+        /* } */
         /* image_rw_temp.data[i] = image_rw_temp.data[i] + randomTempNoise(image_rw_temp.data[i]); */
         image_vis.at<unsigned char>(cv::Point(i, j)) = std::max(0.0, std::min(255.0, image_scale * image_rw_temp.at<double>(cv::Point(i, j))));
         /* ROS_INFO_STREAM(image_rw_temp.at<double>(cv::Point(i,j))); */
