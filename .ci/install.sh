@@ -41,7 +41,7 @@ mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 ln -s ~/uav_core
 ln -s ~/simulation
-ln -s "$MY_PATH" mrs_gazebo_extra_resources
+ln -s "$MY_PATH" mrs_gazebo_extras_resources
 source /opt/ros/$ROS_DISTRO/setup.bash
 cd ~/catkin_ws
 
