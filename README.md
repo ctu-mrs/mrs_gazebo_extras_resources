@@ -1,4 +1,7 @@
-# MRS extras resources for Gazebo [![Build Status](https://travis-ci.com/ctu-mrs/mrs_gazebo_extras_resources.svg?branch=master)](https://travis-ci.com/ctu-mrs/mrs_gazebo_extras_resources)
+# MRS extras resources for Gazebo
+
+| Build status | [![Build Status](https://github.com/ctu-mrs/mrs_gazebo_extra_resources/workflows/Melodic/badge.svg)](https://github.com/ctu-mrs/mrs_gazebo_extra_resources/actions) | [![Build Status](https://github.com/ctu-mrs/mrs_gazebo_extra_resources/workflows/Noetic/badge.svg)](https://github.com/ctu-mrs/mrs_gazebo_extra_resources/actions) |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 Resources for Gazebo/ROS simulator that depends on packages (e.g. mrs_msgs, mrs_lib) inside of the MRS system.
 
@@ -52,7 +55,7 @@ Modified version from the `hector_gazebo:` [hector_gazebo_thermal_camera](https:
 ### Description
 - Simulates a thermal camera sensor in Gazebo.
 - Objects that can be detected by the thermo camera have to have specific visual properties. See example [fire_mockup](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/blob/master/models/fire_mockup/model.sdf#L14-L18).
-- The original plugin has been extended to publish tranform message on topic `/tf_gazebo_static`. To make this transformation visible in ROS use our [Static transform republisher plugin](../world_plugins/README.md#static-transform-republisher-plugin) in your `world` definition. 
+- The original plugin has been extended to publish tranform message on topic `/tf_gazebo_static`. To make this transformation visible in ROS use our [Static transform republisher plugin](../world_plugins/README.md#static-transform-republisher-plugin) in your `world` definition.
 
 ### Usage
 After building, activate by adding the following to your robot definition.
