@@ -32,15 +32,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## catkin specific configuration ##
 ###################################
 
-catkin_package(
-  DEPENDS GAZEBO Boost OpenCV
-  # INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp gazebo_plugins gazebo_ros std_msgs mrs_msgs tf2_msgs tf2 tf2_ros geometry_msgs mrs_lib
+set(LIBRARIES
+  MRSGazeboLinkAttacherPlugin MRSGazeboThermalCameraPlugin
   )
 
-###########
-## Build ##
-###########
+catkin_package(
+  DEPENDS GAZEBO Boost OpenCV
+  CATKIN_DEPENDS roscpp gazebo_plugins gazebo_ros std_msgs mrs_msgs tf2_msgs tf2 tf2_ros geometry_msgs mrs_lib
+  LIBRARIES ${LIBRARIES}
+  )
+
+## --------------------------------------------------------------
+## |                            Build                           |
+## --------------------------------------------------------------
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
@@ -51,17 +55,42 @@ include_directories(
 
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
-add_library(MRSGazeboLinkAttacherPlugin src/link_attacher.cpp)
+add_library(MRSGazeboLinkAttacherPlugin
+  src/link_attacher.cpp
+  )
+
 target_link_libraries(MRSGazeboLinkAttacherPlugin
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
   )
 
-add_library(MRSGazeboThermalCameraPlugin src/thermal_camera.cpp)
+add_library(MRSGazeboThermalCameraPlugin
+  src/thermal_camera.cpp
+  )
+
 target_link_libraries(MRSGazeboThermalCameraPlugin
   ${GAZEBO_LIBRARIES}
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${OpenCV_LIBRARIES}
   CameraPlugin
+  )
+
+## --------------------------------------------------------------
+## |                           Install                          |
+## --------------------------------------------------------------
+
+install(TARGETS ${LIBRARIES}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+  )
+
+install(DIRECTORY models
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+install(DIRECTORY ./
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  FILES_MATCHING PATTERN "*.xml"
   )
