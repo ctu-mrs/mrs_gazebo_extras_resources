@@ -1,7 +1,7 @@
 # MRS extras resources for Gazebo
 
-| Build status | [![Build Status](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/workflows/Melodic/badge.svg)](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/actions) | [![Build Status](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/workflows/Noetic/badge.svg)](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/actions) |
-|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Build status | [![Build Status](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/workflows/Noetic/badge.svg)](https://github.com/ctu-mrs/mrs_gazebo_extras_resources/actions) |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 Resources for Gazebo/ROS simulator that depends on packages (e.g. mrs_msgs, mrs_lib) inside of the MRS system.
 
