@@ -1,25 +1,30 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 3.5)
 project(mrs_gazebo_extras_resources)
 
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  gazebo_ros
-  gazebo_plugins
-  std_msgs
-  mrs_msgs
-  tf2_msgs
-  tf2
-  tf2_ros
-  geometry_msgs
+set(CATKIN_DEPENDENCIES
   cv_bridge
+  gazebo_plugins
+  gazebo_ros
+  geometry_msgs
   mrs_lib
+  mrs_msgs
+  roscpp
+  std_msgs
+  tf2
+  tf2_msgs
+  tf2_ros
+  )
+
+find_package(catkin REQUIRED COMPONENTS
+  ${CATKIN_DEPENDENCIES}
   )
 
 # include Gazebo
 find_package(gazebo REQUIRED)
+ign_import_target(UUID)
 
 # include OpenCV
-find_package(OpenCV REQUIRED HINTS /usr/local/lib)
+find_package(OpenCV REQUIRED)
 
 ## Find Boost
 find_package(Boost REQUIRED COMPONENTS thread)
@@ -33,12 +38,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ###################################
 
 set(LIBRARIES
-  MRSGazeboLinkAttacherPlugin MRSGazeboThermalCameraPlugin
+  MrsGazeboExtrasResources_AttacherPlugin MrsGazeboExtrasResources_ThermalCameraPlugin
   )
 
 catkin_package(
-  DEPENDS GAZEBO Boost OpenCV
-  CATKIN_DEPENDS roscpp gazebo_plugins gazebo_ros std_msgs mrs_msgs tf2_msgs tf2 tf2_ros geometry_msgs mrs_lib
+  DEPENDS GAZEBO Boost
+  CATKIN_DEPENDS ${CATKIN_DEPENDENCIES}
   LIBRARIES ${LIBRARIES}
   )
 
@@ -49,26 +54,27 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
-  ${OPENCV_INCLUDE_DIRS}
+  ${GAZEBO_MSG_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   )
 
 link_directories(${GAZEBO_LIBRARY_DIRS})
 
-add_library(MRSGazeboLinkAttacherPlugin
+add_library(MrsGazeboExtrasResources_AttacherPlugin
   src/link_attacher.cpp
   )
 
-target_link_libraries(MRSGazeboLinkAttacherPlugin
+target_link_libraries(MrsGazeboExtrasResources_AttacherPlugin
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES}
   )
 
-add_library(MRSGazeboThermalCameraPlugin
+add_library(MrsGazeboExtrasResources_ThermalCameraPlugin
   src/thermal_camera.cpp
   )
 
-target_link_libraries(MRSGazeboThermalCameraPlugin
+target_link_libraries(MrsGazeboExtrasResources_ThermalCameraPlugin
   ${GAZEBO_LIBRARIES}
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -88,9 +94,4 @@ install(TARGETS ${LIBRARIES}
 
 install(DIRECTORY models
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  )
-
-install(DIRECTORY ./
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  FILES_MATCHING PATTERN "*.xml"
   )

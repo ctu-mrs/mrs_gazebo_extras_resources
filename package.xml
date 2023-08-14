@@ -14,19 +14,19 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>gazebo</depend>
-  <depend>gazebo_plugins</depend>
-
   <depend>cv_bridge</depend>
-  <depend>roscpp</depend>
+  <depend>gazebo_plugins</depend>
   <depend>gazebo_ros</depend>
-  <depend>std_msgs</depend>
-  <depend>mrs_msgs</depend>
-  <depend>mrs_lib</depend>
   <depend>geometry_msgs</depend>
+  <depend>mrs_lib</depend>
+  <depend>mrs_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
   <depend>tf2</depend>
-  <depend>tf2_ros</depend>
   <depend>tf2_msgs</depend>
+  <depend>tf2_ros</depend>
+
+  <depend>gazebo</depend>
 
   <export>
     <!-- gazebo_ros_paths_plugin automatically adds these to
